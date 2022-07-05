@@ -1,0 +1,3711 @@
+{
+	"info": {
+		"_postman_id": "4a08a8c0-186a-47f5-a2b5-458ffd9fbc67",
+		"name": "ServerRest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "Create New User Administrator",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Cadastro realizado com sucesso\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + response._id,\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{userName}},\r\n  \"email\": {{email}},\r\n  \"password\": {{password}},\r\n  \"administrador\": \"true\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/usuarios",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create New User Not Administrator",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Cadastro realizado com sucesso\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + response._id,\r",
+											"    method: 'DELETE',  \r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{userName}},\r\n  \"email\": {{email}},\r\n  \"password\": {{password}},\r\n  \"administrador\": \"false\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/usuarios",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "Create New User Repeated Email",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: \"Fulano da Silva\",\r",
+											"            email: \"email@email.com\",\r",
+											"            password: \"teste\",\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Este email já está sendo usado\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{userName}},\r\n  \"email\": {{email}},\r\n  \"password\": {{password}},\r\n  \"administrador\": \"true\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/usuarios",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create New User Empty Email",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.email).equals(\"email não pode ficar em branco\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{userName}},\r\n  \"email\": \"\",\r\n  \"password\": {{password}},\r\n  \"administrador\": \"true\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/usuarios",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create New User Invalid Email",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.email).equals(\"email deve ser um email válido\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{userName}},\r\n  \"email\": {{invalidEmail}},\r\n  \"password\": {{password}},\r\n  \"administrador\": \"true\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/usuarios",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create New User Empty Name",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.nome).equals(\"nome não pode ficar em branco\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": \"\",\r\n  \"email\": {{email}},\r\n  \"password\": {{password}},\r\n  \"administrador\": \"true\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/usuarios",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create New User Empty Password",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.password).equals(\"password não pode ficar em branco\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{userName}},\r\n  \"email\": {{email}},\r\n  \"password\": \"\",\r\n  \"administrador\": \"true\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/usuarios",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create New User Empty Administrador",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.administrador).equals(\"administrador deve ser 'true' ou 'false'\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{userName}},\r\n  \"email\": {{email}},\r\n  \"password\": {{password}},\r\n  \"administrador\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/usuarios",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create New User Invalid Administrador",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.administrador).equals(\"administrador deve ser 'true' ou 'false'\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{userName}},\r\n  \"email\": {{email}},\r\n  \"password\": {{password}},\r\n  \"administrador\": \"hello\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/usuarios",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Produtos",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "Create Product",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Cadastro realizado com sucesso\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/produtos/\" + response._id,\r",
+											"    auth: {\r",
+											"        type: 'bearer',\r",
+											"        bearer: [\r",
+											"            {\r",
+											"                key: \"token\",\r",
+											"                value: pm.environment.get(\"adminToken\"),\r",
+											"            }\r",
+											"        ]\r",
+											"    },\r",
+											"    method: 'DELETE',\r",
+											"}, (err, res) => {\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"        method: 'DELETE',\r",
+											"    })\r",
+											"},\r",
+											");\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": {{price}},\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Product",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"\r",
+											"        pm.sendRequest({\r",
+											"            url: pm.environment.get(\"baseUrl\") + \"/produtos\",\r",
+											"            method: 'POST',\r",
+											"            header: { 'content-type': 'application/json' },\r",
+											"            auth: {\r",
+											"                type: 'bearer',\r",
+											"                bearer: [\r",
+											"                    {\r",
+											"                        key: \"token\",\r",
+											"                        value: pm.environment.get(\"adminToken\"),\r",
+											"                    }\r",
+											"                ]\r",
+											"            },\r",
+											"            body: {\r",
+											"                mode: 'raw',\r",
+											"                raw: JSON.stringify({\r",
+											"                    nome: pm.collectionVariables.get(\"product\"),\r",
+											"                    preco: pm.collectionVariables.get(\"price\"),\r",
+											"                    descricao: pm.collectionVariables.get(\"description\"),\r",
+											"                    quantidade: pm.collectionVariables.get(\"quantity\")\r",
+											"                })\r",
+											"            }\r",
+											"        }, (err, res) => {\r",
+											"            pm.environment.set(\"productId\", res.json()._id)\r",
+											"        })\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Registro excluído com sucesso\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/produtos/\" + response._id,\r",
+											"    auth: {\r",
+											"        type: 'bearer',\r",
+											"        bearer: [\r",
+											"            {\r",
+											"                key: \"token\",\r",
+											"\t\t\t\tvalue: pm.environment.get(\"adminToken\"),\r",
+											"            }\r",
+											"        ]\r",
+											"    },\r",
+											"    method: 'DELETE',  \r",
+											"}, (err, res) => {\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"        method: 'DELETE',  \r",
+											"    })\r",
+											"    },    \r",
+											");\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos/{{productId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos",
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "Create Product Repeated Name",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"\r",
+											"        pm.sendRequest({\r",
+											"            url: pm.environment.get(\"baseUrl\") + \"/produtos\",\r",
+											"            method: 'POST',\r",
+											"            header: { 'content-type': 'application/json' },\r",
+											"            auth: {\r",
+											"                type: 'bearer',\r",
+											"                bearer: [\r",
+											"                    {\r",
+											"                        key: \"token\",\r",
+											"                        value: pm.environment.get(\"adminToken\"),\r",
+											"                    }\r",
+											"                ]\r",
+											"            },\r",
+											"            body: {\r",
+											"                mode: 'raw',\r",
+											"                raw: JSON.stringify({\r",
+											"                    nome: \"Soja\",\r",
+											"                    preco: 123,\r",
+											"                    descricao: \"Soja in Cubes\",\r",
+											"                    quantidade: 15\r",
+											"                })\r",
+											"            }\r",
+											"        }, (err, res) => {\r",
+											"            pm.environment.set(\"productId\", res.json()._id)\r",
+											"        })\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Já existe produto com esse nome\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/produtos/\" + pm.environment.get(\"productId\"),\r",
+											"    auth: {\r",
+											"        type: 'bearer',\r",
+											"        bearer: [\r",
+											"            {\r",
+											"                key: \"token\",\r",
+											"                value: pm.environment.get(\"adminToken\"),\r",
+											"            }\r",
+											"        ]\r",
+											"    },\r",
+											"    method: 'DELETE',\r",
+											"}, (err, res) => {\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"        method: 'DELETE',\r",
+											"    })\r",
+											"},\r",
+											");\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": {{price}},\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product Invalid Token",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "123",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": {{price}},\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product Empty Token",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": {{price}},\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product Not Administrator User",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"false\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 403\", function () {\r",
+											"    pm.response.to.have.status(403);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Rota exclusiva para administradores\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": {{price}},\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product Empty Name",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.nome).equals(\"nome não pode ficar em branco\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": \"\",\r\n  \"preco\": {{price}},\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product Integer Name",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.nome).equals(\"nome deve ser uma string\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": 1,\r\n  \"preco\": {{price}},\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product No Price",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.preco).equals(\"preco é obrigatório\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product Negative/0 Price",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.preco).equals(\"preco deve ser um número positivo\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": 0,\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product Not Integer Price",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.preco).equals(\"preco deve ser um inteiro\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": 1.5,\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product String Price",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.preco).equals(\"preco deve ser um número\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": \"Hi\",\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product No Description",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.descricao).equals(\"descricao é obrigatório\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": 123,\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product Integer Description",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.descricao).equals(\"descricao deve ser uma string\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": 123,\r\n  \"descricao\": 2,\r\n  \"quantidade\": {{quantity}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product No Quantity",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.quantidade).equals(\"quantidade é obrigatório\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": 123,\r\n  \"descricao\": {{description}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product Negative Quantity",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.quantidade).equals(\"quantidade deve ser maior ou igual a 0\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": 123,\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": -1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product Not Integer Quantity",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.quantidade).equals(\"quantidade deve ser um inteiro\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": 123,\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": 1.5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product String Quantity",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.quantidade).equals(\"quantidade deve ser um número\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nome\": {{product}},\r\n  \"preco\": 123,\r\n  \"descricao\": {{description}},\r\n  \"quantidade\": \"hi\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Product Invalid Id",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Nenhum registro excluído\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos/{{invalidId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos",
+										"{{invalidId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Product Not Admin User",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"false\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 403\", function () {\r",
+											"    pm.response.to.have.status(403);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Rota exclusiva para administradores\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos/{{invalidId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos",
+										"{{invalidId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Product Empty Token",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"false\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos/{{invalidId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos",
+										"{{invalidId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Product Invalid Token",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"false\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "123",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos/{{invalidId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos",
+										"{{invalidId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Product Within a Cart",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"\r",
+											"        pm.sendRequest({\r",
+											"            url: pm.environment.get(\"baseUrl\") + \"/produtos\",\r",
+											"            method: 'POST',\r",
+											"            header: { 'content-type': 'application/json' },\r",
+											"            auth: {\r",
+											"                type: 'bearer',\r",
+											"                bearer: [\r",
+											"                    {\r",
+											"                        key: \"token\",\r",
+											"                        value: pm.environment.get(\"adminToken\"),\r",
+											"                    }\r",
+											"                ]\r",
+											"            },\r",
+											"            body: {\r",
+											"                mode: 'raw',\r",
+											"                raw: JSON.stringify({\r",
+											"                    nome: pm.collectionVariables.get(\"product\"),\r",
+											"                    preco: pm.collectionVariables.get(\"price\"),\r",
+											"                    descricao: pm.collectionVariables.get(\"description\"),\r",
+											"                    quantidade: pm.collectionVariables.get(\"quantity\")\r",
+											"                })\r",
+											"            }\r",
+											"        }, (err, res) => {\r",
+											"            pm.environment.set(\"productId\", res.json()._id)\r",
+											"\r",
+											"            pm.sendRequest({\r",
+											"                url: pm.environment.get(\"baseUrl\") + \"/carrinhos\",\r",
+											"                method: 'POST',\r",
+											"                header: { 'content-type': 'application/json' },\r",
+											"                auth: {\r",
+											"                    type: 'bearer',\r",
+											"                    bearer: [\r",
+											"                        {\r",
+											"                            key: \"token\",\r",
+											"                            value: pm.environment.get(\"adminToken\"),\r",
+											"                        }\r",
+											"                    ]\r",
+											"                },\r",
+											"                body: {\r",
+											"                    mode: 'raw',\r",
+											"                    raw: JSON.stringify({\r",
+											"                        produtos: [{\r",
+											"                            idProduto: pm.environment.get(\"productId\"),\r",
+											"                            quantidade: 2\r",
+											"                        }],\r",
+											"                    })\r",
+											"                }\r",
+											"            })\r",
+											"        })\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Não é permitido excluir produto que faz parte de carrinho\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/carrinhos/concluir-compra\",\r",
+											"    auth: {\r",
+											"        type: 'bearer',\r",
+											"        bearer: [\r",
+											"            {\r",
+											"                key: \"token\",\r",
+											"                value: pm.environment.get(\"adminToken\"),\r",
+											"            }\r",
+											"        ]\r",
+											"    },\r",
+											"    method: 'DELETE',\r",
+											"}, (err, res) => {\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/produtos/\" + pm.environment.get(\"productId\"),\r",
+											"        auth: {\r",
+											"            type: 'bearer',\r",
+											"            bearer: [\r",
+											"                {\r",
+											"                    key: \"token\",\r",
+											"                    value: pm.environment.get(\"adminToken\"),\r",
+											"                }\r",
+											"            ]\r",
+											"        },\r",
+											"        method: 'DELETE',\r",
+											"    }, (err, res) => {\r",
+											"\r",
+											"        pm.sendRequest({\r",
+											"            url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"            method: 'DELETE',\r",
+											"        })\r",
+											"    },\r",
+											"    )\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/produtos/{{productId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"produtos",
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Carrinhos",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "Delete Cart",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"\r",
+											"        pm.sendRequest({\r",
+											"            url: pm.environment.get(\"baseUrl\") + \"/produtos\",\r",
+											"            method: 'POST',\r",
+											"            header: { 'content-type': 'application/json' },\r",
+											"            auth: {\r",
+											"                type: 'bearer',\r",
+											"                bearer: [\r",
+											"                    {\r",
+											"                        key: \"token\",\r",
+											"                        value: pm.environment.get(\"adminToken\"),\r",
+											"                    }\r",
+											"                ]\r",
+											"            },\r",
+											"            body: {\r",
+											"                mode: 'raw',\r",
+											"                raw: JSON.stringify({\r",
+											"                    nome: pm.collectionVariables.get(\"product\"),\r",
+											"                    preco: pm.collectionVariables.get(\"price\"),\r",
+											"                    descricao: pm.collectionVariables.get(\"description\"),\r",
+											"                    quantidade: pm.collectionVariables.get(\"quantity\")\r",
+											"                })\r",
+											"            }\r",
+											"        }, (err, res) => {\r",
+											"            pm.environment.set(\"productId\", res.json()._id)\r",
+											"\r",
+											"            pm.sendRequest({\r",
+											"                url: pm.environment.get(\"baseUrl\") + \"/carrinhos\",\r",
+											"                method: 'POST',\r",
+											"                header: { 'content-type': 'application/json' },\r",
+											"                auth: {\r",
+											"                    type: 'bearer',\r",
+											"                    bearer: [\r",
+											"                        {\r",
+											"                            key: \"token\",\r",
+											"                            value: pm.environment.get(\"adminToken\"),\r",
+											"                        }\r",
+											"                    ]\r",
+											"                },\r",
+											"                body: {\r",
+											"                    mode: 'raw',\r",
+											"                    raw: JSON.stringify({\r",
+											"                        produtos: [{\r",
+											"                            idProduto: pm.environment.get(\"productId\"),\r",
+											"                            quantidade: 2\r",
+											"                        }],\r",
+											"                    })\r",
+											"                }\r",
+											"            })\r",
+											"        })\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Registro excluído com sucesso\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/produtos/\" + pm.environment.get(\"productId\"),\r",
+											"    auth: {\r",
+											"        type: 'bearer',\r",
+											"        bearer: [\r",
+											"            {\r",
+											"                key: \"token\",\r",
+											"                value: pm.environment.get(\"adminToken\"),\r",
+											"            }\r",
+											"        ]\r",
+											"    },\r",
+											"    method: 'DELETE',\r",
+											"}, (err, res) => {\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"        method: 'DELETE',\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/carrinhos/concluir-compra",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"carrinhos",
+										"concluir-compra"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Cart No Cart",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Não foi encontrado carrinho para esse usuário\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/produtos/\" + pm.environment.get(\"productId\"),\r",
+											"    auth: {\r",
+											"        type: 'bearer',\r",
+											"        bearer: [\r",
+											"            {\r",
+											"                key: \"token\",\r",
+											"\t\t\t\tvalue: pm.environment.get(\"adminToken\"),\r",
+											"            }\r",
+											"        ]\r",
+											"    },\r",
+											"    method: 'DELETE',  \r",
+											"}, (err, res) => {\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"        method: 'DELETE',  \r",
+											"    })\r",
+											"    },    \r",
+											");\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{adminToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/carrinhos/concluir-compra",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"carrinhos",
+										"concluir-compra"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "Delete Cart Empty Token",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"})\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/carrinhos/concluir-compra",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"carrinhos",
+										"concluir-compra"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Cart Invalid Token",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios\",\r",
+											"    method: 'POST',\r",
+											"    header: { 'content-type': 'application/json' },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            nome: pm.collectionVariables.get(\"adminName\"),\r",
+											"            email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"            password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            administrador: \"true\"\r",
+											"        })\r",
+											"    }\r",
+											"}, (err, res) => {\r",
+											"    pm.environment.set(\"userId\", res.json()._id)\r",
+											"\r",
+											"    pm.sendRequest({\r",
+											"        url: pm.environment.get(\"baseUrl\") + \"/login\",\r",
+											"        method: 'POST',\r",
+											"        header: { 'content-type': 'application/json' },\r",
+											"        body: {\r",
+											"            mode: 'raw',\r",
+											"            raw: JSON.stringify({\r",
+											"                email: pm.collectionVariables.get(\"adminEmail\"),\r",
+											"                password: pm.collectionVariables.get(\"adminPassword\"),\r",
+											"            })\r",
+											"        }\r",
+											"    }, (err, res) => {\r",
+											"        pm.environment.set(\"adminToken\", res.json().authorization.slice(7))\r",
+											"\r",
+											"    })\r",
+											"},\r",
+											");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Correct Message\", function () {\r",
+											"    pm.expect(response.message).equals(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+											"});\r",
+											"\r",
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get(\"baseUrl\") + \"/usuarios/\" + pm.environment.get(\"userId\"),\r",
+											"    method: 'DELETE',\r",
+											"})\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "123",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/carrinhos/concluir-compra",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"carrinhos",
+										"concluir-compra"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "userName",
+			"value": "\"Manuel\"",
+			"type": "string"
+		},
+		{
+			"key": "email",
+			"value": "\"email@email.com\"",
+			"type": "string"
+		},
+		{
+			"key": "invalidEmail",
+			"value": "\"invalidemail\"",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "\"password\"",
+			"type": "string"
+		},
+		{
+			"key": "adminName",
+			"value": "Afonso",
+			"type": "string"
+		},
+		{
+			"key": "adminPassword",
+			"value": "password",
+			"type": "string"
+		},
+		{
+			"key": "adminEmail",
+			"value": "admin@admin.com",
+			"type": "string"
+		},
+		{
+			"key": "product",
+			"value": "\"Soja\"",
+			"type": "string"
+		},
+		{
+			"key": "price",
+			"value": "123",
+			"type": "string"
+		},
+		{
+			"key": "description",
+			"value": "\"Soja in Cubes\"",
+			"type": "string"
+		},
+		{
+			"key": "quantity",
+			"value": "15",
+			"type": "string"
+		},
+		{
+			"key": "invalidId",
+			"value": "\"Oxldsfgjhuifajg\"",
+			"type": "string"
+		},
+		{
+			"key": "productId",
+			"value": ""
+		}
+	]
+}
